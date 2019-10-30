@@ -59,7 +59,7 @@ def esperar(tcp,send,host='',port=5000):
    #print(str(msg2,'utf-8'))
    send.put_interceptar(str(msg1,'utf-8'))
 
-######  gambiarra  ######
+######  JUMP CAT  ######
 
 import random
 from math import pow
