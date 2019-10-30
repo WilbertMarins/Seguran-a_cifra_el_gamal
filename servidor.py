@@ -66,7 +66,7 @@ from math import pow
 
 a = random.randint(2, 10)
 
-
+# MDC
 def gcd(a, b):
  if a < b:
   return gcd(b, a)
