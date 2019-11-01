@@ -1,5 +1,23 @@
 from socket import socket, AF_INET, SOCK_STREAM
 from threading import Thread
+#funcoes especiais
+# envio
+def pre_proc(en_msg1):
+    string = []
+    for i in range(0, len(en_msg1)):
+        string.append(str(en_msg1[i]))
+    msg_pro = "-".join(string)  # msg processada para envio
+    return msg_pro
+
+
+# recebe
+def pos_pro(msg_ci):
+    processo = msg_ci.split("-")
+    inteiro = []
+    for i in range(0, len(processo)):
+        inteiro.append(int(processo[i]))
+
+    return inteiro
 
 # classe para manipular o socket
 
@@ -82,18 +100,18 @@ def power(a, b, c):
 
 
 # Asymmetric encryption
+
 def encrypt(msg, q, h, g):
  en_msg = []
 
- k = gen_key(q)  # Private key for sender
+ k = gen_key(q)  # Public key for sender
  s = power(h, k, q)
  p = power(g, k, q)
 
  for i in range(0, len(msg)):
   en_msg.append(msg[i])
 
- print("g^k used : ", p)
- print("g^ak used : ", s)
+
  for i in range(0, len(en_msg)):
   en_msg[i] = s * ord(en_msg[i])
 
@@ -109,20 +127,14 @@ def decrypt(en_msg, p, key, q):
  return dr_msg
 
 
-# Driver code
-#def main():
-# print('Escreva sua menssagem')
-# msg = 'encryption'
-#msg = input()
 
-# print("Original Message :", msg)
+
 q = random.randint(pow(10, 20), pow(10, 50))
 g = random.randint(2, q)
 k = gen_key(q)  # Private key for sender
 key = gen_key(q)  # Private key for receiver
 h = power(g, key, q)
-print("g used : ", g)
-print("g^a used : ", h)
+
  ########################
 
 if __name__ == '__main__':
@@ -141,19 +153,10 @@ if __name__ == '__main__':
     processo.start()
     print('')
 
+send.put(k)#envia a chave publica
 msg=input()
 while True:
- en_msg, p = encrypt(msg, q, h, g)
-
- dr_msg = decrypt(en_msg, p, key, q)
- c = 0
- crip = []
- while (c < len(en_msg)):
-  crip.append(str(en_msg[c]))
-  c += 1
- crip_c = ''.join(dr_msg)
-
- send.put(crip_c)
+ send.put(msg)
  msg=input()
 
 processo.join()
