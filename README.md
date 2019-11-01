@@ -1,2 +1,2 @@
-# Seguran-a_cifra_el_gamal
+# Seguranca_cifra_el_gamal
 Trabalho de Segurança da informação 2019/2
