@@ -1,8 +1,26 @@
 from socket import socket,AF_INET,SOCK_STREAM
 from threading import Thread
 
-ko=True
 
+#funcoes especiais:
+
+# envio
+def pre_proc(en_msg1):
+ string = []
+ for i in range(0, len(en_msg1)):
+  string.append(str(en_msg1[i]))
+ msg_pro = "-".join(string)  # msg processada para envio
+ return msg_pro
+
+
+#recebe
+def pos_pro(msg_ci):
+ processo = msg_ci.split("-")
+ inteiro = []
+ for i in range(0, len(processo)):
+  inteiro.append(int(processo[i]))
+
+ return inteiro
 #classe para manipular o socket
 class Send:
  def __init__(self):
@@ -49,6 +67,7 @@ def esperar(tcp,send,host='',port=5000):
   #atribui a conexão ao servidor
   send.con=con
   send.co=co
+  k=con.recv(1024)# chave publica
 
   while True:
    #aceita uma mensagem
@@ -59,14 +78,14 @@ def esperar(tcp,send,host='',port=5000):
    #print(str(msg2,'utf-8'))
    send.put_interceptar(str(msg1,'utf-8'))
 
-######  JUMP CAT  ######
+######  algoritmo  ######
 
 import random
 from math import pow
 
 a = random.randint(2, 10)
 
-# MDC
+
 def gcd(a, b):
  if a < b:
   return gcd(b, a)
@@ -104,15 +123,14 @@ def power(a, b, c):
 def encrypt(msg, q, h, g):
  en_msg = []
 
- k = gen_key(q)  # Private key for sender
+ k = h  # Public key for sender
  s = power(h, k, q)
  p = power(g, k, q)
 
  for i in range(0, len(msg)):
   en_msg.append(msg[i])
 
- print("g^k used : ", p)
- print("g^ak used : ", s)
+
  for i in range(0, len(en_msg)):
   en_msg[i] = s * ord(en_msg[i])
 
@@ -128,34 +146,16 @@ def decrypt(en_msg, p, key, q):
  return dr_msg
 
 
-# Driver code
-#def main():
-# print('Escreva sua menssagem')
-# msg = 'encryption'
-#msg = input()
 
-# print("Original Message :", msg)
 q = random.randint(pow(10, 20), pow(10, 50))
 g = random.randint(2, q)
-k = gen_key(q)  # Private key for sender
-key = gen_key(q)  # Private key for receiver
+k = gen_key(q)  # key for sender
+key = gen_key(q)  # key for receiver
 h = power(g, key, q)
-print("g used : ", g)
-print("g^a used : ", h)
-
-#en_msg, p = encrypt(msg, q, h, g)
-#print("cript Message :", en_msg)
-#dr_msg = decrypt(en_msg, p, key, q)
-#dmsg = ''.join(dr_msg)
-#print("Decrypted Message :", dmsg);
-
-
-#if __name__ == '__main__':
- #main()
 
 ##########################
 
-#if __name__ == '__main__':
+
 #cria um socket
 tcp=socket(AF_INET,SOCK_STREAM)
 send=Send()
@@ -169,17 +169,10 @@ print('Aguarde alguém conectar!')
 
 msg=input()
 while True:
- en_msg, p = encrypt(msg, q, h, g)
-
- dr_msg = decrypt(en_msg, p, key, q)
- c = 0
- crip = []
- while (c < len(en_msg)):
-  crip.append(str(en_msg[c]))
-  c += 1
- crip_c = ''.join(dr_msg)
-
- send.put(crip_c)
+ en_msg, p = encrypt(msg, q, k, g)
+ manda=pre_proc(en_msg)
+ a=manda
+ send.put(a)
  msg=input()
   
 processo.join()
