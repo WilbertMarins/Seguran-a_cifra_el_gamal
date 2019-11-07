@@ -4,25 +4,6 @@ from threading import Thread
 import tkinter
 
 
-class Client:
-    def __init__(self, private_key, my_public_key):  # metodo construtor
-        self.public_keys = {}
-        self.__private_key = private_key
-        self.my_public_key = my_public_key
-
-    def add_public_key(self, name, public_keys):
-        public_keys[name] = self.my_public_key
-
-    def set_public_key(self, key):
-        self.public_key = key
-
-    def get_my_public_key(self):
-        return self.my_public_key
-
-    def get_private_key(self):
-        return self.__private_key
-
-
 def receive():
     """Handles receiving of messages."""
     while True:
@@ -59,7 +40,7 @@ my_msg.set("Escreve pô.")
 scrollbar = tkinter.Scrollbar(messages_frame)
 # Following will contain the messages.
 msg_list = tkinter.Listbox(messages_frame, height=15,
-                           width=50, yscrollcommand=scrollbar.set)
+                           width=80, yscrollcommand=scrollbar.set)
 scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
 msg_list.pack(side=tkinter.LEFT, fill=tkinter.BOTH)
 msg_list.pack()

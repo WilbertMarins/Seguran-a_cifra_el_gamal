@@ -1,6 +1,8 @@
 """Server for multithreaded (asynchronous) chat application."""
 from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
+from user import User
+from elgamal import gerar_chaves
 
 
 def accept_incoming_connections():
@@ -18,6 +20,9 @@ def handle_client(client):  # Takes client socket as argument.
     """Handles a single client connection."""
 
     name = client.recv(BUFSIZ).decode("utf8")
+    user = User(name, gerar_chaves())
+    user.add_public_key(user.name, user.get_my_public_key())
+    user.mostrar_dados()
     welcome = 'Bem vindo %s! Agora é so escrever, se quiser sair digita {quit}.' % name
     client.send(bytes(welcome, "utf8"))
     msg = "%s o cara entrou!" % name
@@ -57,6 +62,7 @@ SERVER.bind(ADDR)
 if __name__ == "__main__":
     SERVER.listen(5)
     print("Esperando alguem chegar...")
+
     ACCEPT_THREAD = Thread(target=accept_incoming_connections)
     ACCEPT_THREAD.start()
     ACCEPT_THREAD.join()

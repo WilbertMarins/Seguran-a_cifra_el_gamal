@@ -1,7 +1,7 @@
-import random
+from random import randint
 from math import pow
 
-a = random.randint(2, 10)
+a = randint(2, 10)
 
 
 def gcd(a, b):
@@ -16,9 +16,9 @@ def gcd(a, b):
 # Generating large random numbers
 def gen_key(q):
 
-    key = random.randint(pow(10, 20), q)
+    key = randint(pow(10, 20), q)
     while gcd(q, key) != 1:
-        key = random.randint(pow(10, 20), q)
+        key = randint(pow(10, 20), q)
 
     return key
 
@@ -66,3 +66,13 @@ def decrypt(en_msg, p, key, q):
         dr_msg.append(chr(int(en_msg[i]/h)))
 
     return dr_msg
+
+
+def gerar_chaves():
+    p = randint(pow(10, 20), pow(10, 50))  # numero primo
+    g = randint(2, p)
+    k = gen_key(p)  # chave privada
+    r = power(g, k, p)  # calcula a congruencia pra fazer algo
+    public_key = (p, r, g)
+
+    return public_key, k
