@@ -6,7 +6,7 @@ from elgamal import gerar_chaves
 
 
 def accept_incoming_connections():
-    """Sets up handling for incoming clients."""
+    """Configura o manuseio para clientes recebidos"""
     while True:
         client, client_address = SERVER.accept()
         print("%s:%s ihhhh tem gente." % client_address)
@@ -16,8 +16,8 @@ def accept_incoming_connections():
         Thread(target=handle_client, args=(client,)).start()
 
 
-def handle_client(client):  # Takes client socket as argument.
-    """Handles a single client connection."""
+def handle_client(client):  # Toma o sockt do cliente como argumento.
+    """Lida com uma única conexão de cliente."""
 
     name = client.recv(BUFSIZ).decode("utf8")
     user = User(name, gerar_chaves())
@@ -41,8 +41,8 @@ def handle_client(client):  # Takes client socket as argument.
             break
 
 
-def broadcast(msg, prefix=""):  # prefix is for name identification.
-    """Broadcasts a message to all the clients."""
+def broadcast(msg, prefix=""):  # prefix é para identificação do nome.
+    """Transmite uma mensagem para todos os clientes."""
 
     for sock in clients:
         sock.send(bytes(prefix, "utf8")+msg)
