@@ -10,6 +10,7 @@ def receive():
     while True:
         try:
             msg = client_socket.recv(BUFSIZ).decode("utf8")
+            print("nome socket ", client_socket.getsockname())
             # nessa parte acredito que pode ocorrer a decifragem
             msg_list.insert(tkinter.END, msg)
         except OSError:  # Possibilidade do cliente deixar o chat.
