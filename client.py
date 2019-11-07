@@ -2,22 +2,24 @@
 from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
 import tkinter
+from elgamal import encrypt
 
 
 def receive():
-    """Handles receiving of messages."""
+    """Recebimento de mensagens"""
     while True:
         try:
             msg = client_socket.recv(BUFSIZ).decode("utf8")
+            # nessa parte acredito que pode ocorrer a decifragem
             msg_list.insert(tkinter.END, msg)
-        except OSError:  # Possibly client has left the chat.
+        except OSError:  # Possibilidade do cliente deixar o chat.
             break
 
 
-def send(event=None):  # event is passed by binders.
-    """Handles sending of messages."""
+def send(event=None):  # evento é passado por binders.
+    """Envio de mensagens."""
     msg = my_msg.get()
-    my_msg.set("")  # Clears input field.
+    my_msg.set("")  # Limpa o campo de entrada.
     client_socket.send(bytes(msg, "utf8"))
     if msg == "{quit}":
         client_socket.close()
@@ -25,20 +27,20 @@ def send(event=None):  # event is passed by binders.
 
 
 def on_closing(event=None):
-    """This function is to be called when the window is closed."""
+    """Esta função deve ser chamada quando a janela é fechada."""
     my_msg.set("{quit}")
     send()
 
 
 top = tkinter.Tk()
-top.title("Chatter")
+top.title("Chat Toppezzera")
 
 messages_frame = tkinter.Frame(top)
-my_msg = tkinter.StringVar()  # For the messages to be sent.
+my_msg = tkinter.StringVar()  # Para que as mensagens sejam enviadas.
 my_msg.set("Escreve pô.")
-# To navigate through past messages.
+# Para navegar pelas mensagens anteriores.
 scrollbar = tkinter.Scrollbar(messages_frame)
-# Following will contain the messages.
+# A seguir conterá as mensagens.
 msg_list = tkinter.Listbox(messages_frame, height=15,
                            width=80, yscrollcommand=scrollbar.set)
 scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
@@ -54,7 +56,7 @@ send_button.pack()
 
 top.protocol("WM_DELETE_WINDOW", on_closing)
 
-# ----Now comes the sockets part----
+# ----Agora vem a parte dos sockets----
 HOST = input('Enter host: ')
 PORT = input('Enter port: ')
 if not PORT:
