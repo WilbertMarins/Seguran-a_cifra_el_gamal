@@ -39,13 +39,13 @@ def power(a, b, c):
 
 
 # Asymmetric encryption
-def encrypt(msg, p, r, g):
-
+def encrypt(msg, public_key=()):
+    # public_key corresponde a "p, r, g"
     en_msg = []
 
-    b = gen_key(p)  # Private key for sender
-    s = power(r, b, p)  # congruencia pra algo
-    gamma = power(g, b, p)
+    b = gen_key(public_key[0])  # Private key for sender
+    s = power(public_key[1], b, public_key[0])  # congruencia pra algo
+    gamma = power(public_key[2], b, public_key[0])
 
     for i in range(0, len(msg)):
         en_msg.append(msg[i])
@@ -58,10 +58,10 @@ def encrypt(msg, p, r, g):
     return en_msg, gamma
 
 
-def decrypt(en_msg, p, key, q):
-
+def decrypt(en_msg, private_key=()):
+    # private_key corresponde a "p, key, q"
     dr_msg = []
-    h = power(p, key, q)
+    h = power(private_key[0], private_key[1], private_key[2])
     for i in range(0, len(en_msg)):
         dr_msg.append(chr(int(en_msg[i]/h)))
 
