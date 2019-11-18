@@ -12,9 +12,11 @@ def gamaltop(msg):
     r = power(g, k, p)  # calcula a congruencia pra fazer algo
     print("g used : ", g)
     print("g^a used : ", r)
+    chave1 = (p, r, g)
 
-    en_msg, gamma = encrypt(msg, p, r, g)
-    dr_msg = decrypt(en_msg, gamma, k, p)
+    en_msg, gamma = encrypt(msg, chave1)
+    chave2 = (gamma, k, p)
+    dr_msg = decrypt(en_msg, chave2)
     dmsg = ''.join(dr_msg)
     print("Decrypted Message :", dmsg)
 
