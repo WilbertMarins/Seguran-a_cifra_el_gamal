@@ -5,6 +5,8 @@ import pickle
 
 # PICKLES.DUMPS() FUNÇAO PARA ENVIAR MSG
 # PICKLES.LOAD() FUNÇAO PARA CARREGAR MSG localhost
+
+
 P=0#gamma da msg do servidor para compor a msg
 nome_serv="servidor"
 def accept_incoming_connections():
@@ -29,7 +31,8 @@ def handle_client(client):  # Toma o sockt do cliente como argumento.
     dados=pickle.loads(nome)
     name= dados[0]
     chaves.append(dados[1])
-    print("chaves",chaves)
+    print("Chave recebida:",dados[1]," é do usuario ",name)
+    print("Vetor de chaves publicas",chaves)
 
     welcome = 'Bem vindo %s! Agora é so escrever, se quiser sair digita {quit}.' % name
     boas_vindas=[welcome,chaves,P,nome_serv]
@@ -44,18 +47,19 @@ def handle_client(client):  # Toma o sockt do cliente como argumento.
     #nome.append(name1) #listagem de nomes para ser usado nos parametros
     endereco.append(client) #listagem de nomes para ser usado nos parametros  #NOVO
 
-    print("cliente will",clients[name])
-    print("cli",clients)
-    print("end",endereco)
+    #print("cliente ",clients[name])
+    #print("cli",clients)
+    #
+    #print("end",endereco)
     #DESCONSIDERA OS PRINTS ABAIXO
-    print("esse é o",name)
-    print("clientes",clients)
-    print(len(clients))
-    print("end do cliente",client)
-    print("nomes",nomes)
-    print(len(nomes))
-    print("nome",name)
-    print(len(name))
+    # #print("esse é o",name)
+    # print("clientes",clients)
+    # print(len(clients))
+    # print("end do cliente",client)
+    # print("nomes",nomes)
+    # print(len(nomes))
+    # print("nome",name)
+    # print(len(name))
 
 
     while True:
@@ -67,17 +71,16 @@ def handle_client(client):  # Toma o sockt do cliente como argumento.
         else:  ############# HORA DA SAIDA DE UM USUARIO ############
             saida="{quit}"
             msg_tratada = pickle.dumps(saida)
-            #client.send(msg_tratada)
-            #client.close()
+
             saiu=name
             for w in range(len(endereco)):
                 if clients[name]==endereco[w]:
                     endereco.pop(w)
                     chaves.pop(w)
-            #saida=str(name)+"saiu"
+                    break
             client.close()
             desconectado = ("%s saiu fora." % saiu)
-            #msg_tratada = pickle.dumps(desconectado)
+
             broadcast2(desconectado)
 
             break
@@ -87,15 +90,13 @@ def broadcast(msg, prefix=""):  # prefix é para identificação do nome.
     #a msg é um vetor de 2 posições [ vetor de msg , chave_p]
     for i in range(len(endereco)):  # end:nome #NOVO
 
-        print("msg normal",msg)
+        print("msg completa nº ",i,":",msg)
         remetente=(str(prefix))
-        print("msg remetente",msg)
-        print("Nome remetente",str(prefix))
+        #print("msg remetente",msg)
+        #print("Nome remetente",str(prefix))
 
         msgs = [msg[0][i],chaves,msg[2][i],remetente]
 
-        #msg_tratada=pickle.dumps(prefix+msg)  ########SEPARAR MSG DA CHAVE PUBLICA Q A ACOMPANHA #########
-        #msg_tratada=pickle.dumps(prefix+msg)  ########SEPARAR MSG DA CHAVE PUBLICA Q A ACOMPANHA #########
         msg_tratada=pickle.dumps(msgs)  ########SEPARAR MSG DA CHAVE PUBLICA Q A ACOMPANHA #########
         endereco[i].send(msg_tratada)  #NOVO prefix,
 
